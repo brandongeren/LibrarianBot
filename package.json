@@ -4,7 +4,7 @@
   "description": "Discord Bot to search for Yugioh cards",
   "main": "bot.js",
   "scripts": {
-    "test": "node bot.js"
+    "start": "node bot.js"
   },
   "author": "Brandon Geren",
   "license": "MIT",
