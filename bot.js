@@ -10,10 +10,6 @@ client.on('ready', () => {
 
 // TODO: update permissions
 client.on('message', async (msg) => {
-  if (msg.content === '!ping') {
-    msg.channel.send('pong');
-  }
-
   // don't do anything if a bot messages
   if (msg.author.bot || !msg.content) {
     return;
