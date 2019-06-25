@@ -3,7 +3,7 @@ const FuzzySet = require('fuzzyset.js');
 
 let cardInfo = {}
 // might have to update the path for cards.json;
-let cards = JSON.parse(fs.readFileSync('cards.json'))[0];
+let cards = JSON.parse(fs.readFileSync('data/cards.json'))[0];
 let cardSet = FuzzySet([], false);
 
 for (let card of cards) {
