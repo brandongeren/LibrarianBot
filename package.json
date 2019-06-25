@@ -1,0 +1,11 @@
+{
+  "name": "cardbot",
+  "version": "1.0.0",
+  "description": "Discord Bot to search for Yugioh cards",
+  "main": "bot.js",
+  "scripts": {
+    "test": "start"
+  },
+  "author": "Brandon Geren",
+  "license": "MIT"
+}
