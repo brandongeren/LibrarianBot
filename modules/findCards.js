@@ -52,7 +52,7 @@ function findCard(input) {
     return cardInfo[cardName];
   }
   else {
-    return 'No card found, try again.'
+    return null;
   }
 }
 
@@ -163,7 +163,11 @@ function makeDescription(card) {
 
 function searchCards(name) {
   let card = findCard(name);
-  return makeEmbed(card);
+  if (card) {
+    return makeEmbed(card);
+  } else {
+    return null;
+  }
 }
 
 exports.searchCards = searchCards;
