@@ -1,5 +1,9 @@
 **To run the bot**: 
 
+Install node js
+
+npm install
+
 npm start
 
 **To add the bot to your server**:
