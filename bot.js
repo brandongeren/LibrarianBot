@@ -1,40 +1,42 @@
-require('dotenv').load();
-const fs = require('fs');
-const FuzzySet = require('fuzzyset.js');
+require('dotenv').config();
 const Discord = require('discord.js');
+const findCards = require('./modules/findCards.js');
+const fs = require('fs');
+
 const client = new Discord.Client();
+const defaults = JSON.parse(fs.readFileSync("./config/defaults.json", "utf8"));
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.on('message', msg => {
-  if (msg.content === 'ping') {
-    msg.reply('pong');
+// TODO: update permissions
+client.on('message', async (msg) => {
+  if (msg.content === '!ping') {
+    msg.channel.send('pong');
+  }
+
+  // don't do anything if a bot messages
+  if (msg.author.bot || !msg.content) {
+    return;
+  }
+  const content = msg.content.toLowerCase().trim();
+
+  let brackets = defaults.brackets;
+  /* TODO: this should not be startsWith and endsWith,
+     rather, it should be splitting the string and looking at each split
+  */
+  if (content.startsWith(brackets[0]) && content.endsWith(brackets[1])) {
+    let query = content.slice(1, -1);
+    console.log('query: ' + query);
+    let res = findCards.searchCards(query);
+    console.log(res);
+    if (res.embed) {
+      msg.channel.sendEmbed(res.embed);
+    } else {
+      msg.channel.send('error');
+    }
   }
 });
 
 client.login(process.env.TOKEN);
-
-let cardInfo = {}
-// might have to update the path for cards.json;
-let cards = JSON.parse(fs.readFileSync('data/cards.json'))[0];
-let cardSet = FuzzySet([], false);
-
-for (let card of cards) {
-  cardName = card.name.toLowerCase();
-  cardSet.add(cardName);
-  cardInfo[cardName] = card;
-}
-
-function findCard(input) {
-  let name = input.toLowerCase();
-  let match = cardSet.get(name);
-  if (match) {
-    cardName = match[0][1];
-    console.log(cardInfo[cardName]);
-  }
-  else {
-    console.log('no card found');
-  }
-}

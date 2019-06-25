@@ -4,13 +4,14 @@
   "description": "Discord Bot to search for Yugioh cards",
   "main": "bot.js",
   "scripts": {
-    "test": "start"
+    "test": "node bot.js"
   },
   "author": "Brandon Geren",
   "license": "MIT",
   "dependencies": {
     "discord.js": "^11.5.1",
     "dotenv": "^8.0.0",
+    "eris": "^0.10.0",
     "fuzzyset.js": "0.0.8"
   }
 }
