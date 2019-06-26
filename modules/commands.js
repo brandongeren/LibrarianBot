@@ -33,7 +33,7 @@ function findCommands(msg) {
     // test embed here:
     // https://leovoel.github.io/embed-visualizer/
     let embed = {
-      "description": "**See a bug?**\n[Open an issue](https://github.com/brandongeren/SeerBot).\n\n**Want to contribute?**\n[Make a pull request](https://github.com/brandongeren/SeerBot)\n\n**Just want to see the source code?**\n[Click here](https://github.com/brandongeren/SeerBot)\n\n**Want to help develop a new dueling sim?**\nReach out to me via Discord message\nAnarchist Duelist#0166",
+      "description": "**See a bug?**\n[Open an issue](https://github.com/brandongeren/LibrarianBot).\n\n**Want to contribute?**\n[Make a pull request](https://github.com/brandongeren/LibrarianBot)\n\n**Just want to see the source code?**\n[Click here](https://github.com/brandongeren/SeerBot)\n\n**Want to help develop a new dueling sim?**\nReach out to me via Discord message\nAnarchist Duelist#0166",
       "color": 16711680,
       "image": {
         "url": "https://avatars0.githubusercontent.com/u/9919?s=280&v=4"

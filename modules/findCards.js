@@ -6,19 +6,21 @@ let cardInfo = {}
 let cards = JSON.parse(fs.readFileSync('./data/cards.json'))[0];
 let cardSet = FuzzySet([], false);
 
+// map each type of card to its card color
 const COLOR_MAP = {
-  // TODO: add the colors for the egyption god cards
-  "Normal Monster": 16639626,
-  "Effect Monster": 16747347,
-  "Spell Card": 1941108,
-  "Ritual Monster": 10335692,
-  "Fusion Monster": 10520247,
-  "Trap Card": 12343940,
-  "Synchro Monster": 13421772,
-  "XYZ Monster": 1052688,
-  "Link Monster": 139,
+  'Normal Monster': 16639626,
+  'Effect Monster': 16747347,
+  'Spell Card': 1941108,
+  'Ritual Monster': 10335692,
+  'Fusion Monster': 10520247,
+  'Trap Card': 12343940,
+  'Synchro Monster': 13421772,
+  'XYZ Monster': 1052688,
+  'Link Monster': 139,
+  'Token': 6908265,
 }
 
+// map various monster types to the more simplified version
 const CARD_TYPE_MAP = {
   'Pendulum Effect Monster': 'Effect Monster',
   'Flip Effect Monster': 'Effect Monster',
@@ -36,6 +38,56 @@ const CARD_TYPE_MAP = {
   'Pendulum Effect Fusion Monster': 'Fusion Monster',
   'Synchro Tuner Monster': 'Synchro Monster',
   'Synchro Pendulum Effect Monster': 'Synchro Monster'
+}
+
+const CARD_TYPE_DESC_MAP = {
+  'Normal Monster': '',
+  'Pendulum Effect Monster': ' / Pendulum / Effect',
+  'Flip Effect Monster': ' / Flip / Effect',
+  'Effect Monster': ' / Effect',
+  'Tuner Monster': ' / Tuner / Effect',
+  'Synchro Monster': ' / Synchro / Effect',
+  'XYZ Monster': ' / Xyz / Effect',
+  'Fusion Monster': ' / Fusion / Effect',
+  'Normal Tuner Monster': ' / Tuner',
+  'Spirit Monster': ' / Spirit / Effect',
+  'Link Monster': ' / Link',
+  'Union Effect Monster': ' / Union / Effect',
+  'Ritual Monster': ' / Ritual',
+  'Ritual Effect Monster': ' / Ritual / Effect',
+  'Gemini Monster': ' / Gemini / Effect',
+  'Toon Monster': ' / Toon / Effect',
+  'Pendulum Normal Monster': ' / Pendulum',
+  'Pendulum Flip Effect Monster': ' / Pendulum / Flip / Effect',
+  'Synchro Tuner Monster': ' / Synchro / Tuner / Effect',
+  'XYZ Pendulum Effect Monster': ' / Xyz / Pendulum / Effect',
+  'Pendulum Tuner Effect Monster': ' / Pendulum / Tuner / Effect',
+  'Synchro Pendulum Effect Monster': ' / Synchro / Pendulum / Effect',
+  'Pendulum Effect Fusion Monster': ' / Fusion / Pendulum / Effect',
+  'Token': ' / Token',
+  'Skill Card': ' / Skill',
+}
+
+// map attributes to their icons
+const ATTRIBUTE_MAP = {
+  'LIGHT': 'https://ygoprodeck.com/pics/LIGHT.jpg',
+  'DARK': 'https://ygoprodeck.com/pics/DARK.jpg',
+  'WIND': 'https://ygoprodeck.com/pics/WIND.jpg',
+  'EARTH': 'https://ygoprodeck.com/pics/EARTH.jpg',
+  'DIVINE': 'https://ygoprodeck.com/pics/DIVINE.jpg',
+  'FIRE': 'https://ygoprodeck.com/pics/FIRE.jpg',
+  'WATER': 'https://ygoprodeck.com/pics/WATER.jpg'
+}
+
+// map spell or trap types to their icons
+const ST_TYPE_MAP = {
+  'Continuous': 'https://ygoprodeck.com/pics/icons/Continuous.png',
+  'Normal': 'https://ygoprodeck.com/pics/icons/Normal.png',
+  'Quick-Play': 'https://ygoprodeck.com/pics/icons/Quick-Play.png',
+  'Equip': 'https://ygoprodeck.com/pics/icons/Equip.png',
+  'Field': 'https://ygoprodeck.com/pics/icons/Field.png',
+  'Counter': 'https://ygoprodeck.com/pics/icons/Counter.png',
+  'Ritual': 'https://ygoprodeck.com/pics/icons/Ritual.png'
 }
 
 for (let card of cards) {
@@ -56,32 +108,6 @@ function findCard(input) {
   }
 }
 
-/* Props
-  'id',
-  'name',
-  'type',
-  'desc',
-  'race',
-  'set_tag',
-  'setcode',
-  'image_url',
-  'image_url_small',
-  'cardmarket_price',
-  'tcgplayer_price',
-  'ebay_price',
-  'amazon_price',
-  'atk',
-  'def',
-  'level',
-  'attribute',
-  'scale',
-  'archetype',
-  'ban_tcg',
-  'ban_ocg',
-  'linkval',
-  'ban_goat'
-*/
-
 // test embed here:
 // https://leovoel.github.io/embed-visualizer/
 function makeEmbed(card) {
@@ -99,12 +125,15 @@ function makeEmbed(card) {
     }  
   }
   let embed = {
-    "embed": {
-      "title": card.name,
-      "description": makeDescription(card),
-      "color": color,
-      "thumbnail": {
-        "url": card.image_url
+    'embed': {
+      'author': {
+        'name': card.name,
+        'icon_url': getTypeImage(card)
+      },
+      'description': makeDescription(card),
+      'color': color,
+      'thumbnail': {
+        'url': card.image_url
       }
     }
   }
@@ -113,34 +142,37 @@ function makeEmbed(card) {
 }
 
 function makeDescription(card) {
-  // TODO: include spell/trap card type (e.g. counter, continuous)
   let description = '';
 
-  const isST = card.type === 'Spell Card' || card.type === 'Trap Card';
+  const isST = isSpellTrap(card)
   const isXYZ = card.type.includes('XYZ');
 
   if (card.attribute) {
-    description = description.concat("**Attribute**: " + card.attribute + "\n");
+    description = description.concat('**Attribute**: ' + card.attribute + '\n');
   }
 
   if (card.race && isST) {
-    description = description.concat("**Type**: " + card.race + "\n");
+    description = description.concat('**Type**: ' + card.race + '\n');
   }
 
   if (card.level) {
     if (isXYZ) {
-      description = description.concat("**Rank**: " + card.level + "\n");
+      description = description.concat('**Rank**: ' + card.level + '\n');
     } else {
-      description = description.concat("**Level**: " + card.level + "\n");
+      description = description.concat('**Level**: ' + card.level + '\n');
     }
   }
 
   else if (card.linkval) {
-    description = description.concat("**Link Rating**: " + card.linkval + "\n");
+    description = description.concat('**Link Rating**: ' + card.linkval + '\n');
   }
 
   if (card.race && !isST) {
-    description = description.concat("**[** " + card.race + " **]**\n");
+    description = description.concat(getCardTypeLine(card));
+  }
+
+  if (card.scale) {
+    description = description.concat('**Scale:** ' + card.scale + '\n');
   }
 
   // TODO: make the description header
@@ -168,6 +200,40 @@ function searchCards(name) {
   } else {
     return null;
   }
+}
+
+function getTypeImage(card) {
+  if (isSpellTrap(card)) {
+    return ST_TYPE_MAP[card.race];
+  }
+
+  return ATTRIBUTE_MAP[card.attribute];
+}
+
+function isSpellTrap(card) {
+  return card.type === 'Spell Card' || card.type === 'Trap Card';
+}
+
+function getCardTypeLine(card) {
+  const vanillaExtraDeckTypes = ['Fusion Monster', 'XYZ Monster', 'Link Monster', 'Synchro Monster'];
+  /* problem: our card database kinda sucks
+     basically, we need to know if a monster has an effect
+     but the db doesn't tell us for extra deck monsters
+     hacky solution: does the card have a line break in it?
+     this doesn't always work though lmao
+  */
+ let cardType = CARD_TYPE_DESC_MAP[card.type];
+
+  if (vanillaExtraDeckTypes.includes(card.type)) {
+    if (!card.desc.includes('\n')) {
+      cardType = cardType.replace(' / Effect', '');
+    } else if (card.name === 'B. Skull Dragon') {
+      // unfortunately, b. skull dragon has a line break
+      cardType = cardType.replace(' / Effect', '');
+    }
+
+  }
+  return '**[** ' + card.race + cardType + ' **]**\n';
 }
 
 exports.searchCards = searchCards;
