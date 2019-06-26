@@ -18,4 +18,4 @@ Inside it, put:
 
 For example,
 
-`TOKEN=000000000'
+`TOKEN=000000000`
