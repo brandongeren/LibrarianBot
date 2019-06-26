@@ -8,4 +8,14 @@ npm start
 
 **To add the bot to your server**:
 
-https://discordapp.com/oauth2/authorize?&client_id=593107802646642731&scope=bot&permissions=2080898295
+Make your own discord bot instance
+
+Create a file called `.env`
+
+Inside it, put:
+
+`TOKEN=your token`
+
+For example,
+
+`TOKEN=000000000'
