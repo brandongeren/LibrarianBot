@@ -163,7 +163,7 @@ function makeDescription(card) {
     }
   }
 
-  else if (card.linkval) {
+  else if (card.linkval && card.linkval !== '0') {
     description = description.concat('**Link Rating**: ' + card.linkval + '\n');
   }
 
