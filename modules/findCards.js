@@ -126,12 +126,12 @@ function downloadCards() {
 
 function findCard(input) {
   let name = input.toLowerCase();
-  let match = cardSet.get(name);
+  let match = cardSet.get(name, minScore=0.3);
   if (match) {
     let cardName = match[0][1];
     let confidence = match[0][0];
     if (confidence < 0.5) {
-      let strictMatch = cardSetStrict.get(name);
+      let strictMatch = cardSetStrict.get(name, null, 0.3);
       if (strictMatch) {
         cardName = checkForMonarch(name, strictMatch) || strictMatch[0][1];
       }
@@ -148,11 +148,12 @@ function findCard(input) {
 function checkForMonarch(name, match) {
   let cardName = match[0][1];
   if (cardName.includes('mega monarch') && !name.includes('mega')) {
-    cardName = match[1][1];
-    return cardName;
-  } else {
-    return false;
-  }
+    cardName = match[1] && match[1][1];
+    if (cardName) {
+      return cardName;
+    }
+  } 
+  return false;
 }
 
 // test embed here:
