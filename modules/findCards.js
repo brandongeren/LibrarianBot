@@ -91,7 +91,7 @@ const ST_TYPE_MAP = {
 }
 
 for (let card of cards) {
-  cardName = card.name.toLowerCase();
+  let cardName = card.name.toLowerCase();
   cardSet.add(cardName);
   cardInfo[cardName] = card;
 }
@@ -100,7 +100,7 @@ function findCard(input) {
   let name = input.toLowerCase();
   let match = cardSet.get(name);
   if (match) {
-    cardName = match[0][1];
+    let cardName = match[0][1];
     return cardInfo[cardName];
   }
   else {
@@ -163,7 +163,7 @@ function makeDescription(card) {
     }
   }
 
-  else if (card.linkval) {
+  else if (card.linkval && card.linkval != "0") {
     description = description.concat('**Link Rating**: ' + card.linkval + '\n');
   }
 
