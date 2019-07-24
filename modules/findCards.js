@@ -1,16 +1,17 @@
 const FuzzySet = require('fuzzyset.js');
-// const fs = require('fs');
 var request = require('sync-request');
 
 let cardInfo = {}
 // might have to update the path for cards.json;
 
-let cardsRaw = request('GET', 'https://db.ygoprodeck.com/api/v4/cardinfo.php');
-console.log(cardsRaw.getBody());
+let cards = [];
 
-let cards = JSON.parse(cardsRaw.getBody())[0];
+// grab our card database
+downloadCards();
 
-// cards = JSON.parse(fs.readFileSync('./data/cards.json'))[0];
+// every 24 hours, we want to download cards again
+// if any new ones are released, we'll have them within 2 days
+setInterval(downloadCards, 1000*60*60*24*2);
 let cardSet = FuzzySet([], false);
 // cardSetStrict is used when we're not very sure of the card that comes up as a match
 // in that case, we check another database, which works better for substrings
@@ -107,15 +108,13 @@ for (let card of cards) {
   cardInfo[cardName] = card;
 }
 
-// async function downloadCards() {
-//   let cardsRaw = '';
-//   await https.get('https://db.ygoprodeck.com/api/v4/cardinfo.php', (res) => {
-//     res.on('data', (chunk) => {
-//         cardsRaw += chunk;
-//     });
-//   });
-//   return cardsRaw;
-// }
+function downloadCards() {
+  console.log('Downloading cards...');
+  let cardsRaw = request('GET', 'https://db.ygoprodeck.com/api/v4/cardinfo.php');
+
+  cards = JSON.parse(cardsRaw.getBody())[0];
+  console.log('Done');
+}
 
 function findCard(input) {
   let name = input.toLowerCase();
