@@ -1,5 +1,6 @@
 const FuzzySet = require('fuzzyset.js');
-var request = require('sync-request');
+const request = require('sync-request');
+const fs = require('fs');
 
 let cardInfo = {}
 // might have to update the path for cards.json;
@@ -16,6 +17,8 @@ let cardSet = FuzzySet([], false);
 // cardSetStrict is used when we're not very sure of the card that comes up as a match
 // in that case, we check another database, which works better for substrings
 let cardSetStrict = FuzzySet([], false, 3, 6)
+
+const UNKNOWN_STATS = JSON.parse(fs.readFileSync('./data/unknown_stats.json'));
 
 // map each type of card to its card color
 const COLOR_MAP = {
@@ -105,6 +108,11 @@ for (let card of cards) {
   let cardName = card.name.toLowerCase();
   cardSet.add(cardName);
   cardSetStrict.add(cardName);
+  if (card.type.includes('Monster')) {
+    let undefined_stats = UNKNOWN_STATS[card.name];
+    card.atk = undefined_stats && undefined_stats.atk || card.atk;
+    card.def = undefined_stats && undefined_stats.def || card.def;
+  }
   cardInfo[cardName] = card;
 }
 
