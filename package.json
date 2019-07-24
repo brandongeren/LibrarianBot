@@ -9,9 +9,18 @@
   "author": "Brandon Geren",
   "license": "MIT",
   "dependencies": {
+    "@discordjs/uws": "^11.149.1",
+    "bufferutil": "^4.0.1",
     "discord.js": "^11.5.1",
     "dotenv": "^8.0.0",
     "eris": "^0.10.0",
-    "fuzzyset.js": "0.0.8"
+    "erlpack": "github:discordapp/erlpack",
+    "fuzzyset.js": "0.0.8",
+    "libsodium": "^0.7.5",
+    "libsodium-wrappers": "^0.7.5",
+    "node-opus": "^0.3.2",
+    "opusscript": "0.0.6",
+    "sodium": "^3.0.2",
+    "sync-request": "^6.1.0"
   }
 }
