@@ -5,6 +5,9 @@ let cardInfo = {}
 // might have to update the path for cards.json;
 let cards = JSON.parse(fs.readFileSync('./data/cards.json'))[0];
 let cardSet = FuzzySet([], false);
+// cardSetStrict is used when we're not very sure of the card that comes up as a match
+// in that case, we check another database, which works better for substrings
+let cardSetStrict = FuzzySet([], false, 3, 6)
 
 // map each type of card to its card color
 const COLOR_MAP = {
@@ -93,6 +96,7 @@ const ST_TYPE_MAP = {
 for (let card of cards) {
   let cardName = card.name.toLowerCase();
   cardSet.add(cardName);
+  cardSetStrict.add(cardName);
   cardInfo[cardName] = card;
 }
 
@@ -101,10 +105,29 @@ function findCard(input) {
   let match = cardSet.get(name);
   if (match) {
     let cardName = match[0][1];
+    let confidence = match[0][0];
+    if (confidence < 0.5) {
+      let strictMatch = cardSetStrict.get(name);
+      if (strictMatch) {
+        cardName = checkForMonarch(name, strictMatch) || strictMatch[0][1];
+      }
+    }
     return cardInfo[cardName];
   }
   else {
     return null;
+  }
+}
+
+// bot unfortunately is dumb when searching for monarchs
+// so we make a quick hack
+function checkForMonarch(name, match) {
+  let cardName = match[0][1];
+  if (cardName.includes('mega monarch') && !name.includes('mega')) {
+    cardName = match[1][1];
+    return cardName;
+  } else {
+    return false;
   }
 }
 
