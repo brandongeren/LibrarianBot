@@ -127,7 +127,7 @@ function downloadCards() {
 function findCard(input) {
   let name = input.toLowerCase();
   let match = cardSet.get(name, minScore=0.3);
-  if (match) {
+  if (match && match[0]) {
     let cardName = match[0][1];
     let confidence = match[0][0];
     if (confidence < 0.5) {
